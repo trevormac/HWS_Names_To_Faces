@@ -16,6 +16,11 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewPerson))
+        //loads our stored to disc array of names
+        let defaults = UserDefaults.standard
+        if let savedPeople = defaults.object(forKey: "people") as? Data {
+            people = NSKeyedUnarchiver.unarchiveObject(with: savedPeople) as! [Person]
+        }
     
     
     }
@@ -61,6 +66,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         person.name = newName.text!
         
         self.collectionView?.reloadData()
+        self.save()
     })
     present(ac, animated: true)
     }
@@ -95,6 +101,14 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentsDirectory = paths[0]
         return documentsDirectory
+    }
+    
+    func save() {
+        //converts our array into a data object
+        let savedData = NSKeyedArchiver.archivedData(withRootObject: people)
+        //saves that data to user defaults
+        let defaults = UserDefaults.standard
+        defaults.set(savedData, forKey: "people")
     }
 
 

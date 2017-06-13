@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Person: NSObject {
+class Person: NSObject, NSCoding {
 
     var name: String
     var image: String
@@ -18,5 +18,18 @@ class Person: NSObject {
         self.image = image
     }
     
+    //needed to conform to NSCoding:
+    
+    //used when loading objects of this class
+    required init?(coder aDecoder: NSCoder) {
+        name = aDecoder.decodeObject(forKey: "name") as! String
+        image = aDecoder.decodeObject(forKey: "image") as! String
+    }
+    
+    //used when saving
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(name, forKey: "name")
+        aCoder.encode(name, forKey: "image")
+    }
     
 }
